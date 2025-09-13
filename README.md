@@ -4,6 +4,44 @@
 
 Ruby on Rails 8 application with PostgreSQL, Tailwind CSS v4, and Docker.
 
+<!-- Badges: update versions here when bumping Ruby/Rails/Node/Postgres/Tailwind -->
+<p>
+  <a href="https://www.ruby-lang.org/">
+    <img alt="Ruby 3.2.2" src="https://img.shields.io/badge/Ruby-3.2.2-CC342D?logo=ruby&logoColor=white" />
+  </a>
+  <a href="https://rubyonrails.org/">
+    <img alt="Rails 8" src="https://img.shields.io/badge/Rails-8.0-CC0000?logo=rubyonrails&logoColor=white" />
+  </a>
+  <a href="https://www.postgresql.org/">
+    <img alt="PostgreSQL 16" src="https://img.shields.io/badge/PostgreSQL-16-4169E1?logo=postgresql&logoColor=white" />
+  </a>
+  <a href="https://nodejs.org/">
+    <img alt="Node.js 20" src="https://img.shields.io/badge/Node.js-20-339933?logo=node.js&logoColor=white" />
+  </a>
+  <a href="https://tailwindcss.com/">
+    <img alt="Tailwind CSS v4" src="https://img.shields.io/badge/Tailwind_CSS-4.1-06B6D4?logo=tailwindcss&logoColor=white" />
+  </a>
+  <a href="#testing--quality">
+    <img alt="Tests: RSpec" src="https://img.shields.io/badge/Tests-RSpec-6D2E85" />
+  </a>
+  <a href="#testing--quality">
+    <img alt="Code Style: RuboCop" src="https://img.shields.io/badge/Code_Style-RuboCop-000000" />
+  </a>
+  <a href="#testing--quality">
+    <img alt="Security: Brakeman" src="https://img.shields.io/badge/Security-Brakeman-E74C3C" />
+  </a>
+  <a href="https://www.conventionalcommits.org/en/v1.0.0/">
+    <img alt="Conventional Commits" src="https://img.shields.io/badge/Conventional_Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white" />
+  </a>
+  <a href="#quick-start-docker">
+    <img alt="Dockerized: Compose" src="https://img.shields.io/badge/Dockerized-Compose-2496ED?logo=docker&logoColor=white" />
+  </a>
+  <a href="https://github.com/pulls">
+    <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-8A2BE2" />
+  </a>
+  
+</p>
+
 </div>
 
 ## Overview
@@ -91,6 +129,13 @@ You should now be able to visit http://localhost:3000.
 
 RSpec is preconfigured via `.rspec`. Coverage artifacts and reports are excluded from VCS via `.gitignore`.
 
+## CI/CD
+
+GitHub Actions–based CI/CD has been removed from this repository.
+
+- All workflow files were deleted. There is no CI runner triggered on push/PR.
+- To reintroduce CI/CD, create new workflows under `.github/workflows/`.
+
 ## Tailwind CSS v4 Notes
 
 - Source: `app/assets/stylesheets/application.tailwind.css`
@@ -142,6 +187,7 @@ This README was authored and organized with the help of Codex CLI (an open-sourc
 
 - Strengthened `.gitignore` for Rails/RSpec/Tailwind/editor artifacts
 - Wrote and replaced the English `README.md` (this file)
+- Removed GitHub Actions CI (workflows deleted from the repo)
 
 Date: 2025-09-13
 
