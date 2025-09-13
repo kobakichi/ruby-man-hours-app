@@ -1,0 +1,75 @@
+%% Mermaid ERD
+erDiagram
+  Organization ||--o{ Membership : has
+  User ||--o{ Membership : has
+  Organization ||--o{ Project : has
+  Project ||--o{ Task : has
+  User ||--o{ TimeEntry : logs
+  Organization ||--o{ TimeEntry : contains
+  Project ||--o{ TimeEntry : aggregates
+  Task ||--o{ TimeEntry : optional
+
+  Organization {
+    integer id PK
+    string name
+    datetime created_at
+    datetime updated_at
+  }
+
+  User {
+    integer id PK
+    string email
+    string encrypted_password
+    string first_name
+    string last_name
+    datetime created_at
+    datetime updated_at
+  }
+
+  Membership {
+    integer id PK
+    integer organization_id FK
+    integer user_id FK
+    integer role  // 0:member,1:manager,2:admin
+    datetime created_at
+    datetime updated_at
+  }
+
+  Project {
+    integer id PK
+    integer organization_id FK
+    string name
+    string client_name
+    boolean billable
+    integer budget_hours
+    date start_date
+    date end_date
+    datetime created_at
+    datetime updated_at
+  }
+
+  Task {
+    integer id PK
+    integer project_id FK
+    string name
+    boolean billable
+    datetime created_at
+    datetime updated_at
+  }
+
+  TimeEntry {
+    integer id PK
+    integer organization_id FK
+    integer user_id FK
+    integer project_id FK
+    integer task_id FK
+    date work_date
+    integer minutes
+    text note
+    boolean billable
+    datetime approved_at
+    integer approved_by_id
+    datetime created_at
+    datetime updated_at
+  }
+

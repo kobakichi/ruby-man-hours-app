@@ -1,0 +1,33 @@
+<% content_for :title, 'タスク' %>
+
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-semibold">タスク</h1>
+  <%= link_to '新規タスク', new_task_path, class: 'btn' %>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>プロジェクト</th>
+      <th>課金</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @tasks.each do |t| %>
+      <tr>
+        <td><%= t.name %></td>
+        <td><%= t.project&.name %></td>
+        <td><%= t.billable ? '◯' : '–' %></td>
+        <td class="whitespace-nowrap">
+          <%= link_to '表示', t, class: 'text-blue-700 hover:underline' %>
+          <span class="mx-1 text-gray-300">|</span>
+          <%= link_to '編集', edit_task_path(t), class: 'text-blue-700 hover:underline' %>
+          <span class="mx-1 text-gray-300">|</span>
+          <%= button_to '削除', t, method: :delete, form: { data: { turbo_confirm: '削除しますか？' }, class: 'inline' }, class: 'text-red-700 hover:underline' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

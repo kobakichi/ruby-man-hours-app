@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title><%= content_for(:title) || "Kousu App" %></title>
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="mobile-web-app-capable" content="yes">
+    <%= csrf_meta_tags %>
+    <%= csp_meta_tag %>
+
+    <%= yield :head %>
+
+    <%# Enable PWA manifest for installable apps (make sure to enable in config/routes.rb too!) %>
+    <%#= tag.link rel: "manifest", href: pwa_manifest_path(format: :json) %>
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+
+    <link rel="icon" href="/icon.png" type="image/png">
+    <link rel="icon" href="/icon.svg" type="image/svg+xml">
+    <link rel="apple-touch-icon" href="/icon.png">
+
+    <%# Stylesheets: application.css（builds/application.css を配信） %>
+    <%= stylesheet_link_tag "application", preload: false, "data-turbo-track": "reload" %>
+  </head>
+
+  <body class="min-h-screen bg-brand-900 text-brand-50 font-sans">
+    <header class="bg-brand-800/80 border-b border-brand-700 sticky top-0 z-10 backdrop-blur">
+      <div class="container mx-auto max-w-5xl px-6 py-3 flex items-center justify-between">
+        <div class="text-lg font-semibold"><%= link_to 'Kousu App', root_path, class: 'text-brand-50 hover:text-brand-200' %></div>
+        <nav class="flex items-center gap-4 text-sm">
+          <%= link_to '工数', time_entries_path, class: 'text-brand-100 hover:text-white' %>
+          <%= link_to 'プロジェクト', projects_path, class: 'text-brand-100 hover:text-white' %>
+          <%= link_to 'タスク', tasks_path, class: 'text-brand-100 hover:text-white' %>
+          <% if defined?(user_signed_in?) && user_signed_in? %>
+            <%= button_to 'ログアウト', destroy_user_session_path, method: :delete, form: { class: 'inline' }, class: 'btn btn-secondary' %>
+          <% else %>
+            <%= link_to 'ログイン', new_user_session_path, class: 'btn btn-secondary' %>
+          <% end %>
+        </nav>
+      </div>
+    </header>
+    <div class="container mx-auto max-w-5xl p-6">
+      <%= render 'shared/flash' if lookup_context.exists?('shared/flash') %>
+      <%= yield %>
+    </div>
+  </body>
+</html>

@@ -1,0 +1,77 @@
+<%# 集計（小規模アプリなのでビュー内で簡易計算） %>
+<%
+  today = Date.today
+  w_from = today.beginning_of_week(:monday)
+  w_to   = today.end_of_week(:monday)
+  m_from = today.beginning_of_month
+  m_to   = today.end_of_month
+  scope  = policy_scope(TimeEntry).includes(:project, :task)
+  min_today = scope.where(work_date: today).sum(:minutes)
+  min_week  = scope.where(work_date: w_from..w_to).sum(:minutes)
+  min_month = scope.where(work_date: m_from..m_to).sum(:minutes)
+  h = ->(m){ (m.to_f/60).round(1) }
+  recent = scope.order(work_date: :desc).limit(5)
+%>
+
+<section class="mb-6">
+  <div class="flex items-center justify-between">
+    <div>
+      <h1 class="text-xl font-semibold">ダッシュボード</h1>
+      <p class="text-gray-600">ようこそ、<%= current_user&.first_name || current_user&.email %> さん</p>
+    </div>
+    <div class="flex gap-2">
+      <%= link_to '工数入力', new_time_entry_path, class: 'btn' %>
+      <%= link_to 'プロジェクト', projects_path, class: 'btn-secondary' %>
+      <%= link_to 'タスク', tasks_path, class: 'btn-secondary' %>
+    </div>
+  </div>
+</section>
+
+<section class="grid grid-cols-1 md:grid-cols-3 gap-4 mb-6">
+  <div class="bg-white text-gray-900 border border-gray-200 rounded-lg p-4">
+    <div class="text-xs uppercase tracking-wider text-gray-500">今日の工数</div>
+    <div class="mt-1 text-3xl font-semibold tabular-nums"><%= h.call(min_today) %><span class="ml-1 text-base font-medium text-gray-600">h</span></div>
+  </div>
+  <div class="bg-white text-gray-900 border border-gray-200 rounded-lg p-4">
+    <div class="text-xs uppercase tracking-wider text-gray-500">今週の工数</div>
+    <div class="mt-1 text-3xl font-semibold tabular-nums"><%= h.call(min_week) %><span class="ml-1 text-base font-medium text-gray-600">h</span></div>
+  </div>
+  <div class="bg-white text-gray-900 border border-gray-200 rounded-lg p-4">
+    <div class="text-xs uppercase tracking-wider text-gray-500">今月の工数</div>
+    <div class="mt-1 text-3xl font-semibold tabular-nums"><%= h.call(min_month) %><span class="ml-1 text-base font-medium text-gray-600">h</span></div>
+  </div>
+  </section>
+
+<% if min_today == 0 %>
+  <section class="mb-6">
+    <div class="border border-yellow-200 bg-yellow-50 text-yellow-900 rounded-md px-4 py-3">
+      今日はまだ工数がありません。<%= link_to '今すぐ入力', new_time_entry_path, class: 'text-blue-700 underline' %>
+    </div>
+  </section>
+<% end %>
+
+<section>
+  <h2 class="text-lg font-semibold mb-3">最近の工数</h2>
+  <table>
+    <thead>
+      <tr>
+        <th>日付</th>
+        <th>プロジェクト</th>
+        <th>タスク</th>
+        <th>時間(h)</th>
+        <th>メモ</th>
+      </tr>
+    </thead>
+    <tbody>
+      <% recent.each do |e| %>
+        <tr>
+          <td><%= e.work_date %></td>
+          <td><%= e.project&.name %></td>
+          <td><%= e.task&.name %></td>
+          <td><%= e.hours %></td>
+          <td><%= e.note %></td>
+        </tr>
+      <% end %>
+    </tbody>
+  </table>
+</section>

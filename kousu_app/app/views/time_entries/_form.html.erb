@@ -1,0 +1,46 @@
+<%= form_with(model: time_entry, class: "space-y-6") do |f| %>
+  <% if time_entry.errors.any? %>
+    <div class="border border-red-200 bg-red-50 text-red-800 rounded-md px-4 py-3">
+      <h2 class="font-semibold mb-2"><%= pluralize(time_entry.errors.count, 'error') %> があり保存できません:</h2>
+      <ul class="list-disc ml-5">
+        <% time_entry.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div class="form-grid">
+    <div>
+      <%= f.label :project_id, 'プロジェクト' %>
+      <%= f.collection_select :project_id, current_organization.projects.order(:name), :id, :name, { include_blank: '選択してください' }, class: '' %>
+    </div>
+    <div>
+      <%= f.label :task_id, 'タスク' %>
+      <%= f.collection_select :task_id, Task.joins(:project).where(projects: { organization_id: current_organization.id }).order(:name), :id, :name, { include_blank: 'なし' }, class: '' %>
+    </div>
+    <div>
+      <%= f.label :work_date, '日付' %>
+      <%= f.date_field :work_date %>
+    </div>
+    <div>
+      <%= f.label :minutes, '分数' %>
+      <%= f.number_field :minutes, min: 1, step: 15 %>
+    </div>
+    <div class="md:col-span-2">
+      <%= f.label :note, 'メモ' %>
+      <%= f.text_area :note, rows: 3 %>
+    </div>
+    <div>
+      <label class="inline-flex items-center gap-2 mt-6">
+        <%= f.check_box :billable %>
+        課金対象
+      </label>
+    </div>
+  </div>
+
+  <div class="form-actions">
+    <%= f.submit '保存', class: 'btn' %>
+    <%= link_to '一覧に戻る', time_entries_path, class: 'btn-secondary' %>
+  </div>
+<% end %>

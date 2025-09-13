@@ -1,10 +1,9 @@
 <div align="center">
 
-# Kousu App
+# Kousu App Monorepo
 
-Ruby on Rails 8 application with PostgreSQL, Tailwind CSS v4, and Docker.
+Time tracking app (Rails 8) + Rails application template.
 
-<!-- Badges: update versions here when bumping Ruby/Rails/Node/Postgres/Tailwind -->
 <p>
   <a href="https://www.ruby-lang.org/">
     <img alt="Ruby 3.2.2" src="https://img.shields.io/badge/Ruby-3.2.2-CC342D?logo=ruby&logoColor=white" />
@@ -30,60 +29,55 @@ Ruby on Rails 8 application with PostgreSQL, Tailwind CSS v4, and Docker.
   <a href="#testing--quality">
     <img alt="Security: Brakeman" src="https://img.shields.io/badge/Security-Brakeman-E74C3C" />
   </a>
-  <a href="https://www.conventionalcommits.org/en/v1.0.0/">
-    <img alt="Conventional Commits" src="https://img.shields.io/badge/Conventional_Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white" />
-  </a>
   <a href="#quick-start-docker">
     <img alt="Dockerized: Compose" src="https://img.shields.io/badge/Dockerized-Compose-2496ED?logo=docker&logoColor=white" />
   </a>
-  <a href="https://github.com/pulls">
-    <img alt="PRs welcome" src="https://img.shields.io/badge/PRs-welcome-8A2BE2" />
+  <a href="https://www.conventionalcommits.org/en/v1.0.0/">
+    <img alt="Conventional Commits" src="https://img.shields.io/badge/Conventional_Commits-1.0.0-FE5196?logo=conventionalcommits&logoColor=white" />
   </a>
-  
 </p>
 
 </div>
 
 ## Overview
 
-Kousu App is a Rails 8.0 application using a modern, container-friendly stack. It ships with:
+This repo contains two related things:
 
-- Rails 8, Ruby 3.2.2, PostgreSQL 16
-- Hotwire (Turbo + Stimulus), Propshaft
-- Tailwind CSS v4 via the official CLI (assets compiled to `app/assets/builds`)
-- RSpec for testing, plus RuboCop and Brakeman for quality & security
-- Devise (authentication) and Pundit (authorization)
-- Dockerfiles for development (`Dockerfile.dev`) and production (`Dockerfile`)
+- `kousu_app/`: a Rails 8.0 application using Ruby 3.2.2, PostgreSQL 16, Tailwind CSS v4, RSpec, RuboCop and Brakeman. It includes `Dockerfile`, `Dockerfile.dev`, and `docker-compose.yml` for containerized development and production builds.
+- `rails_template.rb`: a Rails Application Template that scaffolds the same time tracking app from scratch via `rails new ... -m rails_template.rb`.
 
-> Note: This repository includes both `Dockerfile` (production) and `docker-compose.yml` (local development). Use Compose for local work and the production Dockerfile for deploys.
+Design documents live under `docs/` (currently written in Japanese):
 
-## Prerequisites
+- ERD (Mermaid): `docs/erd.mmd`
+- MVP backlog: `docs/mvp_backlog.md`
 
-Choose one of the following setups:
+If you just want to run the app, go to Quick Start. If you want to generate a fresh app in a new directory, see Use the Application Template.
 
-- With Docker: Docker Engine + Docker Compose v2
-- Without Docker: Ruby 3.2.2, Node.js 20.19.x, PostgreSQL 16
-  - JS tooling can be installed with npm (`package-lock.json` present) or Yarn 3 via Corepack
+## Repository Layout
+
+- `kousu_app/` — Rails 8 time tracking app (Hotwire, Devise, Pundit, Tailwind v4)
+- `docs/` — ERD and backlog (Japanese)
+- `rails_template.rb` — Rails Application Template to bootstrap the same app
 
 ## Quick Start (Docker)
 
 ```bash
-# Build and run app + Postgres
+cd kousu_app
 docker compose up --build
 
 # App will be available at:
 open http://localhost:3000
 ```
 
-The `web` service waits for the database and runs `bin/rails db:prepare` automatically. Volumes are mounted so code changes reflect immediately.
+The `web` service waits for PostgreSQL and runs `bin/rails db:prepare` automatically. Volumes are mounted for live reload.
 
 ### Common Docker commands
 
 ```bash
-# Run a one-off Rails task in the app container
+# Run migrations in the app container
 docker compose exec web bin/rails db:migrate
 
-# Open a Rails console
+# Rails console
 docker compose exec web bin/rails console
 
 # Run the test suite
@@ -92,71 +86,57 @@ docker compose exec web bundle exec rspec
 
 ## Local Development (without Docker)
 
-1) Install dependencies
+Prerequisites: Ruby 3.2.2, Node.js 20.19.x, PostgreSQL 16.
 
 ```bash
-brew install postgresql@16 # macOS (or use your OS package manager)
+cd kousu_app
+brew install postgresql@16           # macOS example
 bundle install
-npm install        # or: corepack enable && yarn install
-```
+npm install                          # or: corepack enable && yarn install
 
-2) Configure database
-
-Either set `DATABASE_URL` or update `config/database.yml` for your local Postgres. Then:
-
-```bash
+# DB setup
 bin/rails db:prepare
-```
 
-3) Start the app and Tailwind watcher
-
-```bash
 # Start Rails
 bin/rails s
 
-# In another terminal, build CSS with Tailwind CLI (watch mode)
+# In another terminal, watch CSS (Tailwind v4 CLI)
 npx @tailwindcss/cli -i app/assets/stylesheets/application.tailwind.css \
   -o app/assets/builds/application.css --watch
 ```
 
-You should now be able to visit http://localhost:3000.
+Visit http://localhost:3000.
 
-## Testing & Quality
+## Use the Application Template
 
-- Run tests: `bundle exec rspec`
-- Lint Ruby: `bundle exec rubocop`
-- Security scan: `bundle exec brakeman`
-
-RSpec is preconfigured via `.rspec`. Coverage artifacts and reports are excluded from VCS via `.gitignore`.
-
-## CI/CD
-
-GitHub Actions–based CI/CD has been removed from this repository.
-
-- All workflow files were deleted. There is no CI runner triggered on push/PR.
-- To reintroduce CI/CD, create new workflows under `.github/workflows/`.
-
-## Tailwind CSS v4 Notes
-
-- Source: `app/assets/stylesheets/application.tailwind.css`
-- Output: `app/assets/builds/application.css` (the builds directory is on the Rails assets path)
-- The project uses Tailwind v4’s CLI. In CI/production, CSS is built during `assets:precompile`.
-
-## Environment Variables
-
-- `DATABASE_URL`: Postgres connection string used by Rails.
-- `RAILS_MASTER_KEY`: Required in production to decrypt credentials. Provide via environment variable or mount `config/master.key` securely.
-- `PORT`: App port (default: 3000 in development).
-
-For production, additional database roles may be used (cache, queue, cable) as configured in `config/database.yml`.
-
-## Production Build & Run (Docker)
+You can scaffold a fresh project elsewhere using the included template:
 
 ```bash
-# Build a production image
-docker build -t kousu_app .
+rails new kousu_app \
+  -d postgresql -j esbuild -c tailwind \
+  -m /absolute/path/to/rails_template.rb
+```
 
-# Run the container (example: map to host port 8080)
+After generation:
+
+```bash
+cd kousu_app
+bin/rails db:setup
+bin/rails s
+```
+
+Default demo login (seeded):
+
+- Email: `admin@example.com`
+- Password: `password`
+
+## Production (Docker)
+
+Build a production image from `kousu_app/Dockerfile`:
+
+```bash
+cd kousu_app
+docker build -t kousu_app .
 docker run --rm -p 8080:80 \
   -e RAILS_MASTER_KEY=your_master_key_here \
   --name kousu_app kousu_app
@@ -164,33 +144,36 @@ docker run --rm -p 8080:80 \
 # Visit http://localhost:8080
 ```
 
-The production image precompiles assets and starts the app via `thruster`. Ensure the database is reachable and migrations are applied.
+The image precompiles assets and launches via `thruster`. Ensure the database is reachable and migrations are applied.
 
-## Project Structure (high level)
+## Testing & Quality
 
-- `app/` — Rails MVC code, views (Hotwire), and Tailwind sources
-- `app/assets/builds/` — Compiled CSS output (kept out of VCS except `.keep`)
-- `config/` — Application and environment configuration
-- `db/` — Migrations and schema
-- `spec/` — RSpec tests
-- `Dockerfile`, `Dockerfile.dev`, `docker-compose.yml` — Containerization
+- Tests: `bundle exec rspec`
+- Lint: `bundle exec rubocop`
+- Security: `bundle exec brakeman`
 
-## Troubleshooting
+RSpec is configured via `.rspec`. Temporary artifacts are ignored by `.gitignore`.
 
-- Postgres not ready: Compose will retry; check logs with `docker compose logs -f db web`.
-- Missing CSS: Ensure the Tailwind build step ran and `application.css` exists under `app/assets/builds`.
-- Master key error in production: Set `RAILS_MASTER_KEY` or provide `config/master.key`.
+## Environment Variables
 
-## Authored with Codex CLI
+- `DATABASE_URL` — Postgres connection string
+- `RAILS_MASTER_KEY` — Required to decrypt credentials in production
+- `PORT` — App port (3000 in dev, 80 in production image)
 
-This README was authored and organized with the help of Codex CLI (an open-source, terminal-based AI coding assistant by OpenAI). Changes made via Codex:
+## Notes
 
-- Strengthened `.gitignore` for Rails/RSpec/Tailwind/editor artifacts
-- Wrote and replaced the English `README.md` (this file)
-- Removed GitHub Actions CI (workflows deleted from the repo)
+- CI/CD workflows are not included. Add your own under `.github/workflows/` if needed.
+- Dependabot config is present under `kousu_app/.github/dependabot.yml`.
 
-Date: 2025-09-13
+## Contributing
+
+We follow Conventional Commits. Please include in PR descriptions: Background → Changes → Verification → Risks → Learning.
 
 ## License
 
-Add your license here (MIT, Apache-2.0, etc.).
+Add your license (e.g., MIT or Apache-2.0).
+
+---
+
+Authored with Codex CLI — an open-source, terminal-based AI coding assistant by OpenAI.
+

@@ -1,0 +1,55 @@
+<% content_for :title, '工数' %>
+
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-semibold">工数</h1>
+  <div class="flex items-center gap-2">
+    <%= link_to '新規工数', new_time_entry_path, class: 'btn' %>
+    <%= link_to 'CSV', request.query_parameters.merge(format: :csv), class: 'btn-secondary' %>
+  </div>
+  </div>
+
+<div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+  <aside class="md:col-span-1 order-2 md:order-1">
+    <%= render 'filters' %>
+  </aside>
+  <section class="md:col-span-3 order-1 md:order-2 space-y-4">
+    <% minutes_total = @time_entries.sum { |e| e.minutes.to_i } %>
+    <div class="flex flex-wrap gap-3">
+      <div class="bg-white border border-gray-200 rounded-md px-3 py-2"><span class="text-sm text-gray-500">件数</span> <span class="font-semibold"><%= @time_entries.size %></span></div>
+      <div class="bg-white border border-gray-200 rounded-md px-3 py-2"><span class="text-sm text-gray-500">合計</span> <span class="font-semibold"><%= (minutes_total.to_f/60).round(1) %> h</span></div>
+    </div>
+
+    <div class="overflow-x-auto bg-white text-gray-900 border border-gray-200 rounded-lg shadow-sm">
+      <table class="min-w-full">
+        <thead>
+          <tr>
+            <th>日付</th>
+            <th>プロジェクト</th>
+            <th>タスク</th>
+            <th>時間(h)</th>
+            <th>メモ</th>
+            <th></th>
+          </tr>
+        </thead>
+        <tbody>
+          <% @time_entries.each do |e| %>
+            <tr>
+              <td><%= e.work_date %></td>
+              <td><%= e.project&.name %></td>
+              <td><%= e.task&.name %></td>
+              <td><%= e.hours %></td>
+              <td><%= e.note %></td>
+              <td class="whitespace-nowrap">
+                <%= link_to '表示', e, class: 'text-blue-700 hover:underline' %>
+                <span class="mx-1 text-gray-300">|</span>
+                <%= link_to '編集', edit_time_entry_path(e), class: 'text-blue-700 hover:underline' %>
+                <span class="mx-1 text-gray-300">|</span>
+                <%= link_to '削除', e, method: :delete, data: { confirm: '削除しますか?' }, class: 'text-red-700 hover:underline' %>
+              </td>
+            </tr>
+          <% end %>
+        </tbody>
+      </table>
+    </div>
+  </section>
+</div>
