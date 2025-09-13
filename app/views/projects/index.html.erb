@@ -1,16 +1,37 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, 'プロジェクト' %>
 
-<% content_for :title, "Projects" %>
-
-<h1>Projects</h1>
-
-<div id="projects">
-  <% @projects.each do |project| %>
-    <%= render project %>
-    <p>
-      <%= link_to "Show this project", project %>
-    </p>
-  <% end %>
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-semibold">プロジェクト</h1>
+  <%= link_to '新規プロジェクト', new_project_path, class: 'btn' %>
 </div>
 
-<%= link_to "New project", new_project_path %>
+<table>
+  <thead>
+    <tr>
+      <th>名称</th>
+      <th>顧客</th>
+      <th>課金</th>
+      <th>予算(h)</th>
+      <th>期間</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    <% @projects.each do |p| %>
+      <tr>
+        <td><%= p.name %></td>
+        <td><%= p.client_name %></td>
+        <td><%= p.billable ? '◯' : '–' %></td>
+        <td><%= p.budget_hours %></td>
+        <td><%= [p.start_date, p.end_date].compact.join(' 〜 ') %></td>
+        <td class="whitespace-nowrap">
+          <%= link_to '表示', p, class: 'text-blue-700 hover:underline' %>
+          <span class="mx-1 text-gray-300">|</span>
+          <%= link_to '編集', edit_project_path(p), class: 'text-blue-700 hover:underline' %>
+          <span class="mx-1 text-gray-300">|</span>
+          <%= button_to '削除', p, method: :delete, form: { data: { turbo_confirm: '削除しますか？' }, class: 'inline' }, class: 'text-red-700 hover:underline' %>
+        </td>
+      </tr>
+    <% end %>
+  </tbody>
+</table>

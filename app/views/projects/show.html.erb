@@ -1,10 +1,31 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @project.name %>
 
-<%= render @project %>
+<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-semibold"><%= @project.name %></h1>
+    <div class="flex items-center gap-2">
+      <%= link_to '編集', edit_project_path(@project), class: 'btn-secondary' %>
+      <%= button_to '削除', @project, method: :delete, form: { data: { turbo_confirm: '削除しますか？' }, class: 'inline' }, class: 'btn-secondary text-red-700' %>
+      <%= link_to '一覧へ戻る', projects_path, class: 'btn' %>
+    </div>
+  </div>
 
-<div>
-  <%= link_to "Edit this project", edit_project_path(@project) %> |
-  <%= link_to "Back to projects", projects_path %>
-
-  <%= button_to "Destroy this project", @project, method: :delete %>
+  <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <dt class="text-sm text-gray-500">顧客名</dt>
+      <dd class="text-gray-900"><%= @project.client_name.presence || '-' %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">課金対象</dt>
+      <dd class="text-gray-900"><%= @project.billable ? '◯' : '–' %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">予算(時間)</dt>
+      <dd class="text-gray-900"><%= @project.budget_hours %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">期間</dt>
+      <dd class="text-gray-900"><%= [@project.start_date, @project.end_date].compact.join(' 〜 ') %></dd>
+    </div>
+  </dl>
 </div>

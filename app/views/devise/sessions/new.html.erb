@@ -1,0 +1,29 @@
+<% content_for :title, 'ログイン' %>
+
+<div class="max-w-md mx-auto bg-white border border-gray-200 rounded-lg p-6 shadow-sm form-light">
+  <h1 class="text-xl font-semibold mb-4 text-gray-900">ログイン</h1>
+  <%= form_with(scope: resource_name, url: session_path(resource_name), class: 'space-y-4') do |f| %>
+    <div>
+      <%= f.label :email, 'メールアドレス' %>
+      <%= f.email_field :email, autofocus: true, autocomplete: 'email' %>
+    </div>
+    <div>
+      <%= f.label :password, 'パスワード' %>
+      <%= f.password_field :password, autocomplete: 'current-password' %>
+    </div>
+    <% if devise_mapping.rememberable? %>
+      <div>
+        <label class="inline-flex items-center gap-2">
+          <%= f.check_box :remember_me %>
+          次回から自動的にログイン
+        </label>
+      </div>
+    <% end %>
+    <div class="form-actions">
+      <%= f.submit 'ログイン', class: 'btn' %>
+    </div>
+  <% end %>
+  <div class="mt-4 text-sm text-gray-600">
+    <%= render 'devise/shared/links' %>
+  </div>
+</div>

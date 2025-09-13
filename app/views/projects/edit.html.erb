@@ -1,12 +1,13 @@
-<% content_for :title, "Editing project" %>
+<% content_for :title, 'プロジェクト編集' %>
 
-<h1>Editing project</h1>
+<div class="flex items-center justify-between mb-4">
+  <h1 class="text-xl font-semibold">プロジェクト編集</h1>
+  <div class="flex items-center gap-2">
+    <%= link_to '表示', @project, class: 'btn-secondary' %>
+    <%= link_to '一覧に戻る', projects_path, class: 'btn' %>
+  </div>
+</div>
 
-<%= render "form", project: @project %>
-
-<br>
-
-<div>
-  <%= link_to "Show this project", @project %> |
-  <%= link_to "Back to projects", projects_path %>
+<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+  <%= render 'form', project: @project %>
 </div>

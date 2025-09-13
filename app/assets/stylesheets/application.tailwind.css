@@ -1,0 +1,55 @@
+@import "tailwindcss";
+
+/* Tailwind v4: どのファイルからクラス検出するかを宣言 */
+@source "./app/views/**/*.erb";
+@source "./app/helpers/**/*.rb";
+@source "./app/javascript/**/*.{js,ts}";
+@source "./app/assets/stylesheets/**/*.css";
+
+/* 企業向けダークネイビーテーマ */
+@theme {
+  --font-sans: "Inter", ui-sans-serif, system-ui, -apple-system, Segoe UI, Roboto, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --color-brand-50:  #e8edf7;
+  --color-brand-100: #d3daf0;
+  --color-brand-200: #aab9e5;
+  --color-brand-300: #8498d8;
+  --color-brand-400: #5e77ca;
+  --color-brand-500: #3f5db6;
+  --color-brand-600: #2f4a92;
+  --color-brand-700: #23386f;
+  --color-brand-800: #192a58;
+  --color-brand-900: #101b3a;
+}
+
+/* よく使う見た目のショートカット */
+@layer components {
+  .btn { @apply inline-flex items-center px-3 py-2 rounded-md bg-brand-600 text-white hover:bg-brand-500 text-sm font-medium; }
+  .btn-secondary { @apply inline-flex items-center px-3 py-2 rounded-md border border-brand-500/60 text-brand-50 hover:bg-brand-700/40 text-sm font-medium; }
+  .chip { @apply inline-flex items-center px-2.5 py-1 rounded-full border border-brand-600/60 text-brand-100 hover:bg-brand-700/40 text-xs font-medium; }
+  .chip-active { @apply bg-brand-600 text-white border-brand-500; }
+  /* 明色カード内フォーム（ログイン/登録など） */
+  .form-light { @apply text-gray-900; }
+  .form-light label { @apply text-gray-700; }
+  .form-light input[type="text"],
+  .form-light input[type="email"],
+  .form-light input[type="password"],
+  .form-light input[type="date"],
+  .form-light input[type="number"],
+  .form-light input[type="datetime-local"],
+  .form-light select,
+  .form-light textarea { @apply bg-white border border-gray-300 text-gray-900 placeholder-gray-400 focus:outline-none focus:ring-2 focus:ring-brand-500 focus:border-brand-500; }
+  .form-light a { @apply text-brand-700 hover:text-brand-600 hover:underline underline-offset-2; }
+}
+
+/* テーブルの基本体裁 */
+@layer base {
+  table { @apply w-full border-collapse; }
+  thead th { @apply bg-brand-800/60 text-brand-50 text-left; }
+  th, td { @apply border border-brand-700 px-3 py-2 align-top; }
+  label { @apply block text-sm font-medium text-brand-50 mb-1; }
+  input[type="text"], input[type="email"], input[type="password"], input[type="date"], input[type="number"], input[type="datetime-local"], select, textarea {
+    @apply block w-full rounded-md border border-brand-700 px-3 py-2 focus:outline-none focus:ring-2 focus:ring-brand-400 focus:border-brand-400 bg-brand-800 text-brand-50 placeholder-slate-400;
+  }
+  .form-actions { @apply mt-4 flex gap-2; }
+  .form-grid { @apply grid grid-cols-1 gap-4 md:grid-cols-2; }
+}

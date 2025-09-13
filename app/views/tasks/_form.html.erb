@@ -1,9 +1,8 @@
-<%= form_with(model: task) do |form| %>
+<%= form_with(model: task, class: "space-y-6") do |f| %>
   <% if task.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(task.errors.count, "error") %> prohibited this task from being saved:</h2>
-
-      <ul>
+    <div class="border border-red-200 bg-red-50 text-red-800 rounded-md px-4 py-3">
+      <h2 class="font-semibold mb-2"><%= pluralize(task.errors.count, 'error') %> があり保存できません:</h2>
+      <ul class="list-disc ml-5">
         <% task.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,22 +10,25 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :project_id, style: "display: block" %>
-    <%= form.text_field :project_id %>
+  <div class="form-grid">
+    <div>
+      <%= f.label :project_id, 'プロジェクト' %>
+      <%= f.collection_select :project_id, Project.order(:name), :id, :name, { include_blank: '選択してください' }, class: '' %>
+    </div>
+    <div>
+      <%= f.label :name, '名称' %>
+      <%= f.text_field :name %>
+    </div>
+    <div>
+      <label class="inline-flex items-center gap-2 mt-6">
+        <%= f.check_box :billable %>
+        課金対象
+      </label>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :name, style: "display: block" %>
-    <%= form.text_field :name %>
-  </div>
-
-  <div>
-    <%= form.label :billable, style: "display: block" %>
-    <%= form.checkbox :billable %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="form-actions">
+    <%= f.submit '保存', class: 'btn' %>
+    <%= link_to '一覧に戻る', tasks_path, class: 'btn-secondary' %>
   </div>
 <% end %>

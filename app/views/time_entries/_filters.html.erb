@@ -1,26 +1,57 @@
-<%= form_with url: time_entries_path, method: :get, local: true do %>
-  <div style="display:flex; gap: 8px; align-items: end; flex-wrap: wrap;">
-    <div>
-      <label>期間 From</label>
-      <%= date_field_tag :from, params[:from] || Date.today.beginning_of_week(:monday) %>
-    </div>
-    <div>
-      <label>To</label>
-      <%= date_field_tag :to, params[:to] || Date.today.end_of_week(:monday) %>
-    </div>
-    <div>
-      <label>プロジェクト</label>
-      <%= select_tag :project_id, options_from_collection_for_select(@projects, :id, :name, params[:project_id]), include_blank: '全て' %>
-    </div>
-    <% if manager_or_admin?(current_organization) %>
-      <div>
-        <label>ユーザー</label>
-        <%= select_tag :user_id, options_from_collection_for_select(@users, :id, :email, params[:user_id]), include_blank: '自分/全て' %>
+<%# クイック期間プリセット %>
+<%
+  today = Date.today
+  cwf = today.beginning_of_week(:monday); cwe = today.end_of_week(:monday)
+  lwf = cwf - 7; lwe = cwe - 7
+  cmf = today.beginning_of_month; cme = today.end_of_month
+  lmf = (today << 1).beginning_of_month; lme = (today << 1).end_of_month
+  keep = {}.tap do |h|
+    h[:project_id] = params[:project_id] if params[:project_id].present?
+    h[:user_id] = params[:user_id] if params[:user_id].present?
+  end
+%>
+
+<div class="bg-brand-800/40 border border-brand-700 rounded-lg p-4 shadow-sm md:sticky md:top-20">
+  <fieldset class="space-y-3">
+    <legend class="text-sm font-medium text-brand-100">期間</legend>
+    <%= form_with url: time_entries_path, method: :get, local: true, class: 'space-y-3' do %>
+      <div class="grid grid-cols-1 gap-3">
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-3">
+          <div>
+            <label for="from">From</label>
+            <%= date_field_tag :from, params[:from] || cwf, id: 'from', class: 'w-full', aria: { label: '開始日' } %>
+          </div>
+          <div>
+            <label for="to">To</label>
+            <%= date_field_tag :to, params[:to] || cwe, id: 'to', class: 'w-full', aria: { label: '終了日' } %>
+          </div>
+        </div>
+
+        <div class="flex flex-wrap gap-2">
+          <%= link_to '今日', time_entries_path(keep.merge(from: today, to: today)), class: "chip #{'chip-active' if params[:from].to_s==today.to_s && params[:to].to_s==today.to_s}" %>
+          <%= link_to '今週', time_entries_path(keep.merge(from: cwf, to: cwe)), class: "chip #{'chip-active' if params[:from].to_s==cwf.to_s && params[:to].to_s==cwe.to_s}" %>
+          <%= link_to '先週', time_entries_path(keep.merge(from: lwf, to: lwe)), class: "chip" %>
+          <%= link_to '今月', time_entries_path(keep.merge(from: cmf, to: cme)), class: "chip #{'chip-active' if params[:from].to_s==cmf.to_s && params[:to].to_s==cme.to_s}" %>
+          <%= link_to '先月', time_entries_path(keep.merge(from: lmf, to: lme)), class: "chip" %>
+        </div>
+
+        <div>
+          <label>プロジェクト</label>
+          <%= select_tag :project_id, options_from_collection_for_select(@projects, :id, :name, params[:project_id]), include_blank: '全て', class: 'w-full' %>
+        </div>
+        <% if manager_or_admin?(current_organization) %>
+          <div>
+            <label>ユーザー</label>
+            <%= select_tag :user_id, options_from_collection_for_select(@users, :id, :email, params[:user_id]), include_blank: '自分/全て', class: 'w-full' %>
+          </div>
+        <% end %>
+
+        <div class="flex items-center gap-2">
+          <%= submit_tag '絞り込み', class: 'btn' %>
+          <%= link_to 'CSV', request.query_parameters.merge(format: :csv), class: 'btn-secondary' %>
+          <%= link_to 'リセット', time_entries_path, class: 'text-sm text-brand-200 hover:underline ml-auto' %>
+        </div>
       </div>
     <% end %>
-    <div>
-      <%= submit_tag '絞り込み', class: 'btn' %>
-      <%= link_to 'CSV', request.query_parameters.merge(format: :csv), class: 'btn' %>
-    </div>
-  </div>
-<% end %>
+  </fieldset>
+</div>

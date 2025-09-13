@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   include Pundit::Authorization
-  before_action :authenticate_user!
-  before_action :set_current_organization
+  # Deviseコントローラでは認証を要求しない（ログイン/サインアップ時に必須）
+  before_action :authenticate_user!, unless: :devise_controller?
+  before_action :set_current_organization, unless: :devise_controller?
 
   rescue_from Pundit::NotAuthorizedError, with: :user_not_authorized
 

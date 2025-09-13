@@ -1,9 +1,8 @@
-<%= form_with(model: time_entry) do |form| %>
+<%= form_with(model: time_entry, class: "space-y-6") do |f| %>
   <% if time_entry.errors.any? %>
-    <div style="color: red">
-      <h2><%= pluralize(time_entry.errors.count, "error") %> prohibited this time_entry from being saved:</h2>
-
-      <ul>
+    <div class="border border-red-200 bg-red-50 text-red-800 rounded-md px-4 py-3">
+      <h2 class="font-semibold mb-2"><%= pluralize(time_entry.errors.count, 'error') %> があり保存できません:</h2>
+      <ul class="list-disc ml-5">
         <% time_entry.errors.each do |error| %>
           <li><%= error.full_message %></li>
         <% end %>
@@ -11,57 +10,37 @@
     </div>
   <% end %>
 
-  <div>
-    <%= form.label :organization_id, style: "display: block" %>
-    <%= form.text_field :organization_id %>
+  <div class="form-grid">
+    <div>
+      <%= f.label :project_id, 'プロジェクト' %>
+      <%= f.collection_select :project_id, current_organization.projects.order(:name), :id, :name, { include_blank: '選択してください' }, class: '' %>
+    </div>
+    <div>
+      <%= f.label :task_id, 'タスク' %>
+      <%= f.collection_select :task_id, Task.joins(:project).where(projects: { organization_id: current_organization.id }).order(:name), :id, :name, { include_blank: 'なし' }, class: '' %>
+    </div>
+    <div>
+      <%= f.label :work_date, '日付' %>
+      <%= f.date_field :work_date %>
+    </div>
+    <div>
+      <%= f.label :minutes, '分数' %>
+      <%= f.number_field :minutes, min: 1, step: 15 %>
+    </div>
+    <div class="md:col-span-2">
+      <%= f.label :note, 'メモ' %>
+      <%= f.text_area :note, rows: 3 %>
+    </div>
+    <div>
+      <label class="inline-flex items-center gap-2 mt-6">
+        <%= f.check_box :billable %>
+        課金対象
+      </label>
+    </div>
   </div>
 
-  <div>
-    <%= form.label :user_id, style: "display: block" %>
-    <%= form.text_field :user_id %>
-  </div>
-
-  <div>
-    <%= form.label :project_id, style: "display: block" %>
-    <%= form.text_field :project_id %>
-  </div>
-
-  <div>
-    <%= form.label :task_id, style: "display: block" %>
-    <%= form.text_field :task_id %>
-  </div>
-
-  <div>
-    <%= form.label :work_date, style: "display: block" %>
-    <%= form.date_field :work_date %>
-  </div>
-
-  <div>
-    <%= form.label :minutes, style: "display: block" %>
-    <%= form.number_field :minutes %>
-  </div>
-
-  <div>
-    <%= form.label :note, style: "display: block" %>
-    <%= form.textarea :note %>
-  </div>
-
-  <div>
-    <%= form.label :billable, style: "display: block" %>
-    <%= form.checkbox :billable %>
-  </div>
-
-  <div>
-    <%= form.label :approved_at, style: "display: block" %>
-    <%= form.datetime_field :approved_at %>
-  </div>
-
-  <div>
-    <%= form.label :approved_by_id, style: "display: block" %>
-    <%= form.number_field :approved_by_id %>
-  </div>
-
-  <div>
-    <%= form.submit %>
+  <div class="form-actions">
+    <%= f.submit '保存', class: 'btn' %>
+    <%= link_to '一覧に戻る', time_entries_path, class: 'btn-secondary' %>
   </div>
 <% end %>

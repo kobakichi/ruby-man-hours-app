@@ -1,10 +1,23 @@
-<p style="color: green"><%= notice %></p>
+<% content_for :title, @task.name %>
 
-<%= render @task %>
+<div class="bg-white border border-gray-200 rounded-lg p-6 shadow-sm">
+  <div class="flex items-center justify-between mb-4">
+    <h1 class="text-xl font-semibold"><%= @task.name %></h1>
+    <div class="flex items-center gap-2">
+      <%= link_to '編集', edit_task_path(@task), class: 'btn-secondary' %>
+      <%= button_to '削除', @task, method: :delete, form: { data: { turbo_confirm: '削除しますか？' }, class: 'inline' }, class: 'btn-secondary text-red-700' %>
+      <%= link_to '一覧へ戻る', tasks_path, class: 'btn' %>
+    </div>
+  </div>
 
-<div>
-  <%= link_to "Edit this task", edit_task_path(@task) %> |
-  <%= link_to "Back to tasks", tasks_path %>
-
-  <%= button_to "Destroy this task", @task, method: :delete %>
+  <dl class="grid grid-cols-1 md:grid-cols-2 gap-4">
+    <div>
+      <dt class="text-sm text-gray-500">プロジェクト</dt>
+      <dd class="text-gray-900"><%= @task.project&.name %></dd>
+    </div>
+    <div>
+      <dt class="text-sm text-gray-500">課金対象</dt>
+      <dd class="text-gray-900"><%= @task.billable ? '◯' : '–' %></dd>
+    </div>
+  </dl>
 </div>
