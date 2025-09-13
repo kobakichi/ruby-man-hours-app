@@ -1,0 +1,26 @@
+<%= form_with url: time_entries_path, method: :get, local: true do %>
+  <div style="display:flex; gap: 8px; align-items: end; flex-wrap: wrap;">
+    <div>
+      <label>期間 From</label>
+      <%= date_field_tag :from, params[:from] || Date.today.beginning_of_week(:monday) %>
+    </div>
+    <div>
+      <label>To</label>
+      <%= date_field_tag :to, params[:to] || Date.today.end_of_week(:monday) %>
+    </div>
+    <div>
+      <label>プロジェクト</label>
+      <%= select_tag :project_id, options_from_collection_for_select(@projects, :id, :name, params[:project_id]), include_blank: '全て' %>
+    </div>
+    <% if manager_or_admin?(current_organization) %>
+      <div>
+        <label>ユーザー</label>
+        <%= select_tag :user_id, options_from_collection_for_select(@users, :id, :email, params[:user_id]), include_blank: '自分/全て' %>
+      </div>
+    <% end %>
+    <div>
+      <%= submit_tag '絞り込み', class: 'btn' %>
+      <%= link_to 'CSV', request.query_parameters.merge(format: :csv), class: 'btn' %>
+    </div>
+  </div>
+<% end %>

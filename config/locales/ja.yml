@@ -1,0 +1,24 @@
+ja:
+  hello: "こんにちは"
+  activerecord:
+    models:
+      organization: 組織
+      project: プロジェクト
+      task: タスク
+      time_entry: 工数
+      user: ユーザー
+    attributes:
+      project:
+        name: 名称
+        client_name: 顧客名
+        billable: 課金対象
+      task:
+        name: 名称
+        billable: 課金対象
+      time_entry:
+        work_date: 日付
+        minutes: 分
+        note: メモ
+        billable: 課金対象
+        project: プロジェクト
+        task: タスク

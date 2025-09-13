@@ -1,0 +1,67 @@
+<%= form_with(model: time_entry) do |form| %>
+  <% if time_entry.errors.any? %>
+    <div style="color: red">
+      <h2><%= pluralize(time_entry.errors.count, "error") %> prohibited this time_entry from being saved:</h2>
+
+      <ul>
+        <% time_entry.errors.each do |error| %>
+          <li><%= error.full_message %></li>
+        <% end %>
+      </ul>
+    </div>
+  <% end %>
+
+  <div>
+    <%= form.label :organization_id, style: "display: block" %>
+    <%= form.text_field :organization_id %>
+  </div>
+
+  <div>
+    <%= form.label :user_id, style: "display: block" %>
+    <%= form.text_field :user_id %>
+  </div>
+
+  <div>
+    <%= form.label :project_id, style: "display: block" %>
+    <%= form.text_field :project_id %>
+  </div>
+
+  <div>
+    <%= form.label :task_id, style: "display: block" %>
+    <%= form.text_field :task_id %>
+  </div>
+
+  <div>
+    <%= form.label :work_date, style: "display: block" %>
+    <%= form.date_field :work_date %>
+  </div>
+
+  <div>
+    <%= form.label :minutes, style: "display: block" %>
+    <%= form.number_field :minutes %>
+  </div>
+
+  <div>
+    <%= form.label :note, style: "display: block" %>
+    <%= form.textarea :note %>
+  </div>
+
+  <div>
+    <%= form.label :billable, style: "display: block" %>
+    <%= form.checkbox :billable %>
+  </div>
+
+  <div>
+    <%= form.label :approved_at, style: "display: block" %>
+    <%= form.datetime_field :approved_at %>
+  </div>
+
+  <div>
+    <%= form.label :approved_by_id, style: "display: block" %>
+    <%= form.number_field :approved_by_id %>
+  </div>
+
+  <div>
+    <%= form.submit %>
+  </div>
+<% end %>

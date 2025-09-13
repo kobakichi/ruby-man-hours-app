@@ -1,0 +1,9 @@
+<div class="prose">
+  <h1>ダッシュボード</h1>
+  <p>ようこそ、<%= current_user&.first_name || current_user&.email %> さん。</p>
+  <ul>
+    <li><%= link_to '工数入力', time_entries_path %></li>
+    <li><%= link_to 'プロジェクト', projects_path %></li>
+    <li><%= link_to 'タスク', tasks_path %></li>
+  </ul>
+</div>
